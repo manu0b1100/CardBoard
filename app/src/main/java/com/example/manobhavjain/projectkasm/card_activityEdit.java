@@ -316,6 +316,10 @@ public class card_activityEdit extends AppCompatActivity {
             case R.id.menu_item_addpicgallery:
                 addpicgal();
                 return true;
+            case R.id.menu_item_addvoicenote:
+                addvoicenote();
+                return true;
+
 
 
             default:
@@ -323,15 +327,17 @@ public class card_activityEdit extends AppCompatActivity {
 
         }
     }
+
+    public void addvoicenote(){
+        VoiceRecorderFragmentDialog vrfd=new VoiceRecorderFragmentDialog();
+        vrfd.show(getSupportFragmentManager(),"fragment_alert");
+
+
+
+
+    }
     public void addpicgal(){
         Intent galleryIntent = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-
-
-       /* Intent manu=new Intent();
-        manu.setType("image/*");
-        manu.setAction(Intent.ACTION_GET_CONTENT);
-        manu.setType("image/*");*/
-
         startActivityForResult(Intent.createChooser(galleryIntent,"lele pic"),REQUEST_GALLERY);
     }
     public void addpic(){

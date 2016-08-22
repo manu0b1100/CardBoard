@@ -17,6 +17,11 @@
         android:icon="@android:drawable/ic_menu_gallery"
         android:data="Add Gallery Pic"
         app:showAsAction="ifRoom|withText"/>
+    <item
+        android:id="@+id/menu_item_addvoicenote"
+        android:icon="@android:drawable/ic_menu_mylocation"
+        android:data="Add Voice Note"
+        app:showAsAction="ifRoom|withText"/>
 
 
 </menu>
