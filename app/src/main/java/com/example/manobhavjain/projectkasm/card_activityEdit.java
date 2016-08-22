@@ -48,8 +48,8 @@ public class card_activityEdit extends AppCompatActivity {
     private AdapterClass manuAdapter;
     private ArrayList<Data> myObjects;
 
-    private static final int REQUEST_PHOTO=0;
-    private static final int REQUEST_GALLERY=1;
+    private static final int REQUEST_PHOTO=1;
+    private static final int REQUEST_GALLERY=2;
     private Cardbase cardbase;
 
     public static Intent newInstanceEmpty(Context context, UUID uuid){
