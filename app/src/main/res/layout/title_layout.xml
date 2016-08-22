@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    style="@style/TextAppearance.AppCompat.Title">
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/data"
+        android:paddingLeft="8dip"
+        android:paddingTop="12dip"
+        android:paddingBottom="12dip"
+        android:layout_gravity="center_horizontal"
+        android:background="#1132f0"
+        android:fontFamily="@string/abc_font_family_headline_material"
+        android:textColor="#ffffff"
+        android:textStyle="bold" />
+</LinearLayout>
