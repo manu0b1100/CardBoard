@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.net.InterfaceAddress;
 import java.util.UUID;
 
 /**
@@ -28,11 +29,21 @@ public class VoiceRecorderFragmentDialog extends DialogFragment {
     private static MediaPlayer mediaPlayer;
     private static String audiopath;
     private boolean isRecording;
+    VoicerecorderListener listener=null;
+
+    public interface VoicerecorderListener{
+        void onFinishRecording(String uri);
+
+
+
+    }
+    public void setVoicerecorderListener(VoicerecorderListener vrl){
+        this.listener=vrl;
+    }
 
 
 
 
-    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
@@ -107,6 +118,7 @@ public class VoiceRecorderFragmentDialog extends DialogFragment {
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        listener.onFinishRecording("file://"+audiopath);
                         dialogInterface.dismiss();
 
                     }

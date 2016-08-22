@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -20,6 +21,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -40,7 +42,7 @@ import java.util.UUID;
 /**
  * Created by Manobhav Jain on 8/11/2016.
  */
-public class card_activityEdit extends AppCompatActivity {
+public class card_activityEdit extends AppCompatActivity implements VoiceRecorderFragmentDialog.VoicerecorderListener{
 
     //private File mPhotoFile;
     private Uri imguri;
@@ -51,11 +53,20 @@ public class card_activityEdit extends AppCompatActivity {
     private static final int REQUEST_PHOTO=0;
     private static final int REQUEST_GALLERY=1;
     private Cardbase cardbase;
+    private MediaPlayer mediaPlayer;
 
     public static Intent newInstanceEmpty(Context context, UUID uuid){
         Intent i=new Intent(context,card_activityEdit.class);
         i.putExtra("UUID",uuid);
         return i;
+
+    }
+
+    @Override
+    public void onFinishRecording(String uri) {
+        Log.i("manobhav","audio path is "+uri);
+        myObjects.add(new Data(uri,Constants.AUDIONOTE));
+        manuAdapter.notifyItemInserted(myObjects.size());
 
     }
 
@@ -98,6 +109,20 @@ public class card_activityEdit extends AppCompatActivity {
 
         public AdapterClass(ArrayList<Data> manuObjects) {
             this.manuObjects = manuObjects;
+        }
+
+
+        private class AudioViewHolder extends RecyclerView.ViewHolder{
+            private Button PLbutton;
+
+            public AudioViewHolder(View itemView) {
+                super(itemView);
+                PLbutton=(Button)itemView.findViewById(R.id.PLbutton);
+            }
+
+            public Button getPLbutton() {
+                return PLbutton;
+            }
         }
 
 
@@ -219,6 +244,10 @@ public class card_activityEdit extends AppCompatActivity {
                     View view3 = inflater.inflate(R.layout.note_layout, parent, false);
                     viewHolder=new NoteViewHolder(view3);
                     break;
+                case Constants.AUDIONOTE:
+                    View view4=inflater.inflate(R.layout.play_record,parent,false);
+                    viewHolder=new AudioViewHolder(view4);
+                    break;
 
                 default:
                     View v = inflater.inflate(android.R.layout.simple_list_item_1, parent, false);
@@ -249,6 +278,10 @@ public class card_activityEdit extends AppCompatActivity {
                 case Constants.NOTE:
                     NoteViewHolder nvh3=(NoteViewHolder)holder;
                     configurenvh3(nvh3,position);
+                    break;
+                case Constants.AUDIONOTE:
+                    AudioViewHolder avh=(AudioViewHolder)holder;
+                    configurenavh(avh,position);
                 default:
             }
 
@@ -266,6 +299,9 @@ public class card_activityEdit extends AppCompatActivity {
                 return Constants.NOTE;
             else if(manuObjects.get(position).getTYPE()==Constants.IMAGE)
                 return Constants.IMAGE;
+            else if(manuObjects.get(position).getTYPE()==Constants.AUDIONOTE)
+                return Constants.AUDIONOTE;
+
 
             return -1;
         }
@@ -291,6 +327,24 @@ public class card_activityEdit extends AppCompatActivity {
             }
 
     }
+        private void configurenavh(AudioViewHolder avh, final int position){
+
+            avh.getPLbutton().setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Toast.makeText(card_activityEdit.this, "play  button dabaya", Toast.LENGTH_SHORT).show();
+                    mediaPlayer = new MediaPlayer();
+                    try{
+                        mediaPlayer.setDataSource(manuObjects.get(position).getDataString());
+                        mediaPlayer.prepare();}
+
+                    catch (Exception e){
+                        e.printStackTrace();
+                    }
+                    mediaPlayer.start();
+                }
+            });
+        }
 
 
 
@@ -330,6 +384,7 @@ public class card_activityEdit extends AppCompatActivity {
 
     public void addvoicenote(){
         VoiceRecorderFragmentDialog vrfd=new VoiceRecorderFragmentDialog();
+        vrfd.setVoicerecorderListener(this);
         vrfd.show(getSupportFragmentManager(),"fragment_alert");
 
 
