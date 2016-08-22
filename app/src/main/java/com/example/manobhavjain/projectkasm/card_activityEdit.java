@@ -48,7 +48,7 @@ public class card_activityEdit extends AppCompatActivity {
     private AdapterClass manuAdapter;
     private ArrayList<Data> myObjects;
 
-    private static final int REQUEST_PHOTO=2;
+    private static final int REQUEST_PHOTO=0;
     private static final int REQUEST_GALLERY=1;
     private Cardbase cardbase;
 
