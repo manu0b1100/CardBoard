@@ -22,6 +22,12 @@
         android:icon="@android:drawable/ic_menu_mylocation"
         android:data="Add Voice Note"
         app:showAsAction="ifRoom|withText"/>
+    <item
+        android:id="@+id/menu_item_addchecklist"
+        android:icon="@android:drawable/ic_menu_share"
+        android:data="Add Checklist"
+        app:showAsAction="ifRoom|withText"/>
+
 
 
 </menu>

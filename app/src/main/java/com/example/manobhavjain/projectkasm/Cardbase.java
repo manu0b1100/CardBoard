@@ -84,4 +84,54 @@ class Data {
     }
 }
 
+class CheckListItemClass{
+    private String title;
+    private boolean isChecked;
 
+    public CheckListItemClass(boolean isChecked, String title) {
+        this.isChecked = isChecked;
+        this.title = title;
+    }
+
+    public boolean isChecked() {
+        return isChecked;
+    }
+
+    public void setChecked(boolean checked) {
+        isChecked = checked;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+}
+
+class CheckList{
+    private ArrayList<CheckListItemClass>items=new ArrayList<>();
+
+    public ArrayList<CheckListItemClass> getItems() {
+        return items;
+    }
+
+    public void setItems(ArrayList<CheckListItemClass> items) {
+        this.items = items;
+    }
+
+
+    public String toJson(){
+        Gson gson=new Gson();
+        Type type=new TypeToken<ArrayList<CheckListItemClass>>(){}.getType();
+        String Json=gson.toJson(items,type);
+        return Json;
+    }
+    public void fromJson(String JsonString){
+        Gson gson=new Gson();
+        Type type=new TypeToken<ArrayList<CheckListItemClass>>(){}.getType();
+        items=gson.fromJson(JsonString,type);
+
+    }
+}

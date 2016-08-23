@@ -22,8 +22,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
@@ -103,13 +105,41 @@ public class card_activityEdit extends AppCompatActivity implements VoiceRecorde
 
 
 
-    private class AdapterClass extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
+    private class AdapterClass extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements ChecklistAdapter.CheckListListener{
 
         private ArrayList<Data> manuObjects;
+        private CheckList checkList;
+        private ChecklistAdapter checklistAdapter;
+
+        @Override
+        public void oncheckchanged(boolean ischecked, int position) {
+            checkList.getItems().get(position).setChecked(ischecked);
+        }
+
+        @Override
+        public void ontitlechanged(String title, int position) {
+            checkList.getItems().get(position).setTitle(title);
+
+        }
 
         public AdapterClass(ArrayList<Data> manuObjects) {
             this.manuObjects = manuObjects;
         }
+
+        private class CheckListViewHolder extends RecyclerView.ViewHolder{
+            private Button AddItemButton;
+            private RecyclerView recyclerView;
+            private  Button SaveButton;
+
+            public CheckListViewHolder(View itemView) {
+                super(itemView);
+                AddItemButton=(Button)itemView.findViewById(R.id.addItemButton);
+                recyclerView=(RecyclerView)itemView.findViewById(R.id.recyclerChecklistItem);
+                SaveButton=(Button) itemView.findViewById(R.id.Savebutton);
+            }
+
+        }
+
 
 
         private class AudioViewHolder extends RecyclerView.ViewHolder{
@@ -248,6 +278,10 @@ public class card_activityEdit extends AppCompatActivity implements VoiceRecorde
                     View view4=inflater.inflate(R.layout.play_record,parent,false);
                     viewHolder=new AudioViewHolder(view4);
                     break;
+                case Constants.CHECKLIST:
+                    View view5=inflater.inflate(R.layout.checklist_container,parent,false);
+                    viewHolder=new CheckListViewHolder(view5);
+                    break;
 
                 default:
                     View v = inflater.inflate(android.R.layout.simple_list_item_1, parent, false);
@@ -282,6 +316,11 @@ public class card_activityEdit extends AppCompatActivity implements VoiceRecorde
                 case Constants.AUDIONOTE:
                     AudioViewHolder avh=(AudioViewHolder)holder;
                     configurenavh(avh,position);
+                    break;
+                case Constants.CHECKLIST:
+                    CheckListViewHolder cvh=(CheckListViewHolder)holder;
+                    configurecvh(cvh,position);
+                    break;
                 default:
             }
 
@@ -301,6 +340,8 @@ public class card_activityEdit extends AppCompatActivity implements VoiceRecorde
                 return Constants.IMAGE;
             else if(manuObjects.get(position).getTYPE()==Constants.AUDIONOTE)
                 return Constants.AUDIONOTE;
+            else if(manuObjects.get(position).getTYPE()==Constants.CHECKLIST)
+                return Constants.CHECKLIST;
 
 
             return -1;
@@ -345,6 +386,29 @@ public class card_activityEdit extends AppCompatActivity implements VoiceRecorde
                 }
             });
         }
+        private void configurecvh(CheckListViewHolder cvh, final int position){
+            checkList=new CheckList();
+            if(manuObjects.get(position).getDataString()!="")
+            checkList.fromJson(manuObjects.get(position).getDataString());
+            checklistAdapter=new ChecklistAdapter(checkList.getItems(),card_activityEdit.this);
+            checklistAdapter.setOnItemAddedListener(AdapterClass.this);
+            cvh.recyclerView.setLayoutManager(new LinearLayoutManager(card_activityEdit.this));
+            cvh.recyclerView.setAdapter(checklistAdapter);
+            cvh.AddItemButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    checkList.getItems().add(new CheckListItemClass(false,""));
+                    checklistAdapter.notifyItemInserted(checkList.getItems().size());
+                }
+            });
+            cvh.SaveButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    myObjects.get(position).setDataString(checkList.toJson());
+                }
+            });
+
+        }
 
 
 
@@ -373,6 +437,9 @@ public class card_activityEdit extends AppCompatActivity implements VoiceRecorde
             case R.id.menu_item_addvoicenote:
                 addvoicenote();
                 return true;
+            case R.id.menu_item_addchecklist:
+                addchecklist();
+                return true;
 
 
 
@@ -380,6 +447,12 @@ public class card_activityEdit extends AppCompatActivity implements VoiceRecorde
                 return super.onOptionsItemSelected(item);
 
         }
+    }
+    private void addchecklist(){
+        myObjects.add(new Data("",Constants.CHECKLIST));
+        manuAdapter.notifyItemInserted(myObjects.size());
+
+
     }
 
     public void addvoicenote(){
