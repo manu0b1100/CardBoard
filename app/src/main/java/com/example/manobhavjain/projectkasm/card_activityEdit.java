@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -34,6 +35,13 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.common.ResizeOptions;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
+import com.nightonke.boommenu.BoomMenuButton;
+import com.nightonke.boommenu.Types.BoomType;
+import com.nightonke.boommenu.Types.ButtonType;
+import com.nightonke.boommenu.Types.ClickEffectType;
+import com.nightonke.boommenu.Types.DimType;
+import com.nightonke.boommenu.Types.PlaceType;
+import com.nightonke.boommenu.Util;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -51,9 +59,9 @@ public class card_activityEdit extends AppCompatActivity implements VoiceRecorde
     private RecyclerView recyclerView;
     private AdapterClass manuAdapter;
     private ArrayList<Data> myObjects;
+    private BoomMenuButton boomMenuButton;
 
-    private static final int REQUEST_PHOTO=0;
-    private static final int REQUEST_GALLERY=1;
+
     private Cardbase cardbase;
     private MediaPlayer mediaPlayer;
 
@@ -82,6 +90,7 @@ public class card_activityEdit extends AppCompatActivity implements VoiceRecorde
         myObjects=cardbase.getData();
         if(myObjects.size()<=1)
         myObjects.add(new Data("",Constants.NOTE));
+        boomMenuButton=(BoomMenuButton)findViewById(R.id.boom);
         recyclerView=(RecyclerView)findViewById(R.id.act_edit_recycle);
         recyclerView.setLayoutManager(new LinearLayoutManager(card_activityEdit.this));
         manuAdapter=new AdapterClass(myObjects);
@@ -428,55 +437,13 @@ public class card_activityEdit extends AppCompatActivity implements VoiceRecorde
             case R.id.menu_new_item:
                 addnew();
                 return true;
-            case R.id.menu_item_addpic:
-                addpic();
-                return true;
-            case R.id.menu_item_addpicgallery:
-                addpicgal();
-                return true;
-            case R.id.menu_item_addvoicenote:
-                addvoicenote();
-                return true;
-            case R.id.menu_item_addchecklist:
-                addchecklist();
-                return true;
-
-
 
             default:
                 return super.onOptionsItemSelected(item);
 
         }
     }
-    private void addchecklist(){
-        myObjects.add(new Data("",Constants.CHECKLIST));
-        manuAdapter.notifyItemInserted(myObjects.size());
 
-
-    }
-
-    public void addvoicenote(){
-        VoiceRecorderFragmentDialog vrfd=new VoiceRecorderFragmentDialog();
-        vrfd.setVoicerecorderListener(this);
-        vrfd.show(getSupportFragmentManager(),"fragment_alert");
-
-
-
-
-    }
-    public void addpicgal(){
-        Intent galleryIntent = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(Intent.createChooser(galleryIntent,"lele pic"),REQUEST_GALLERY);
-    }
-    public void addpic(){
-
-
-        Intent captureImage=new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
-
-        captureImage.putExtra(MediaStore.EXTRA_OUTPUT,setImageUri());
-        startActivityForResult(captureImage,REQUEST_PHOTO);
-    }
     public void addnew(){
 
         myObjects.add(new Data("",Constants.NOTE));
@@ -502,14 +469,14 @@ public class card_activityEdit extends AppCompatActivity implements VoiceRecorde
 
 
         if(resultCode!=Activity.RESULT_CANCELED) {
-            if (requestCode == REQUEST_PHOTO) {
+            if (requestCode == Constants.REQUEST_PHOTO) {
                 //Log.i("manobhav","the cam path is"+imguri.toString());
                 myObjects.add(new Data(imguri.toString(), Constants.IMAGE));
 
                 manuAdapter.notifyItemInserted(myObjects.size());
 
             }
-            else if(requestCode==REQUEST_GALLERY){
+            else if(requestCode==Constants.REQUEST_GALLERY){
                 Uri selectedImage = data.getData();
                 String[] filePathColumn = { MediaStore.Images.Media.DATA };
 
@@ -534,6 +501,71 @@ public class card_activityEdit extends AppCompatActivity implements VoiceRecorde
 
     }
 
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        int[][] subButtonColors = new int[4][2];
+        subButtonColors[0][0]= ContextCompat.getColor(this, R.color.colorAccent);
+        subButtonColors[0][1]=ContextCompat.getColor(this, R.color.colorAccent);
+        subButtonColors[1][0]=ContextCompat.getColor(this, R.color.green);
+        subButtonColors[1][1]=ContextCompat.getColor(this, R.color.green);
+        subButtonColors[2][0]=ContextCompat.getColor(this, R.color.blue);
+        subButtonColors[2][1]=ContextCompat.getColor(this, R.color.blue);
+        subButtonColors[3][0]=ContextCompat.getColor(this, R.color.orange);
+        subButtonColors[3][1]=ContextCompat.getColor(this, R.color.orange);
+        /*for (int i = 0; i < 3; i++) {
+            subButtonColors[i][1] = ContextCompat.getColor(this, R.color.colorAccent);
+            subButtonColors[i][0] = Util.getInstance().getPressedColor(subButtonColors[i][1]);
+        }*/
+        new BoomMenuButton.Builder()
+                .addSubButton(ContextCompat.getDrawable(this, R.drawable.ic_photo_camera_white_24dp),subButtonColors[0] , "Picture")
+                .addSubButton(ContextCompat.getDrawable(this, R.drawable.ic_playlist_add_check_white_24dp), subButtonColors[1], "Checklist")
+                .addSubButton(ContextCompat.getDrawable(this, R.drawable.ic_keyboard_voice_white_24dp), subButtonColors[2], "Voice Note")
+                .addSubButton(ContextCompat.getDrawable(this, R.drawable.ic_photo_library_white_24dp), subButtonColors[3], "Gallery")
+                .button(ButtonType.CIRCLE)
+                .boom(BoomType.PARABOLA)
+                .place(PlaceType.CIRCLE_4_1)
+                .autoDismiss(true)
+                .cancelable(true)
+                .dim(DimType.DIM_6)
+                .clickEffect(ClickEffectType.RIPPLE)
+                .subButtonTextColor(ContextCompat.getColor(this, R.color.darkness))
+                .subButtonsShadow(Util.getInstance().dp2px(2), Util.getInstance().dp2px(2))
+                .init(boomMenuButton);
+
+        boomMenuButton.setOnSubButtonClickListener(new BoomMenuButton.OnSubButtonClickListener() {
+            @Override
+            public void onClick(int buttonIndex) {
+                switch(buttonIndex){
+                    case 0:
+                        Toast.makeText(card_activityEdit.this, "button 0 clicked", Toast.LENGTH_SHORT).show();
+                        Intent captureImage=new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                        captureImage.putExtra(MediaStore.EXTRA_OUTPUT,setImageUri());
+                        startActivityForResult(captureImage,Constants.REQUEST_PHOTO);
+                        break;
+                    case 1:
+                        Toast.makeText(card_activityEdit.this, "button 1 clicked", Toast.LENGTH_SHORT).show();
+                        myObjects.add(new Data("",Constants.CHECKLIST));
+                        manuAdapter.notifyItemInserted(myObjects.size());
+                        break;
+                    case 2:
+                        Toast.makeText(card_activityEdit.this, "button 2 clicked", Toast.LENGTH_SHORT).show();
+                        VoiceRecorderFragmentDialog vrfd=new VoiceRecorderFragmentDialog();
+                        vrfd.setVoicerecorderListener(card_activityEdit.this);
+                        vrfd.show(getSupportFragmentManager(),"fragment_alert");
+                        break;
+                    case 3:
+                        Toast.makeText(card_activityEdit.this, "button 2 clicked", Toast.LENGTH_SHORT).show();
+                        Intent galleryIntent = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                        startActivityForResult(Intent.createChooser(galleryIntent,"Choose pic"),Constants.REQUEST_GALLERY);
+                        break;
+                    default:
+                        Toast.makeText(card_activityEdit.this, "default clicked", Toast.LENGTH_SHORT).show();
+                        break;
 
 
+                }
+            }
+        });
+    }
 }

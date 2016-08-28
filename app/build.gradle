@@ -33,4 +33,5 @@ dependencies {
     compile 'com.mcxiaoke.volley:library-aar:1.0.1'
     compile 'com.android.support:gridlayout-v7:24.0.0'
     compile 'com.facebook.fresco:fresco:0.13.0'
+    compile 'com.nightonke:boommenu:1.0.9'
 }
