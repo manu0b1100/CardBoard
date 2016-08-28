@@ -7,7 +7,12 @@
         android:icon="@android:drawable/ic_menu_add"
         android:data="add"
         app:showAsAction="ifRoom|withText"/>
-  
+    <item
+        android:id="@+id/menu_del_item"
+        android:icon="@android:drawable/ic_menu_delete"
+        android:data="delete"
+        app:showAsAction="ifRoom|withText"/>
+
 
 
 

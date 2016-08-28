@@ -46,6 +46,11 @@ public class CardsLab {
         values.put(CardsTable.Cols.JSONSTRING,cardbase.toJSON());
         return values;
     }
+    public void deleteNote(Cardbase cardbase){
+
+        mDatabase.delete(CardsTable.NAME,CardsTable.Cols.UUID + "=?",new String[]{cardbase.getId().toString()});
+
+    }
 
     public List<Cardbase> getAllCards(){
         MyCursorWrapper manuWrapper=queryCards(null,null);
@@ -86,13 +91,7 @@ public class CardsLab {
 
     }
 
-    public File getPhotoFile(Cardbase cardbase){
-        File externalFilesDir=mcontext.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        if(externalFilesDir==null){
-            return null;
-        }
-        return new File(externalFilesDir,cardbase.getPhotoFilename());
-    }
+
 
     private MyCursorWrapper queryCards(String whereClause, String whereArgs[]){
         Cursor cursor=mDatabase.query(CardsTable.NAME,null,whereClause,whereArgs,null,null,null);

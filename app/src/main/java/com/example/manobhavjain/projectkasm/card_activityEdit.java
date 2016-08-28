@@ -108,6 +108,11 @@ public class card_activityEdit extends AppCompatActivity implements VoiceRecorde
     protected void onPause() {
         super.onPause();
         cardbase.setData(myObjects);
+        Log.i("manobhav",myObjects.get(0).getDataString());
+        if(myObjects.get(0).getDataString().contentEquals("")){
+            CardsLab.get(card_activityEdit.this).deleteNote(cardbase);
+        }
+        else
         CardsLab.get(card_activityEdit.this).updateCard(cardbase);
     }
 
@@ -437,6 +442,10 @@ public class card_activityEdit extends AppCompatActivity implements VoiceRecorde
             case R.id.menu_new_item:
                 addnew();
                 return true;
+            case R.id.menu_del_item:
+                CardsLab.get(card_activityEdit.this).deleteNote(cardbase);
+                finish();
+                return true;
 
             default:
                 return super.onOptionsItemSelected(item);
@@ -518,10 +527,10 @@ public class card_activityEdit extends AppCompatActivity implements VoiceRecorde
             subButtonColors[i][0] = Util.getInstance().getPressedColor(subButtonColors[i][1]);
         }*/
         new BoomMenuButton.Builder()
-                .addSubButton(ContextCompat.getDrawable(this, R.drawable.ic_photo_camera_white_24dp),subButtonColors[0] , "Picture")
-                .addSubButton(ContextCompat.getDrawable(this, R.drawable.ic_playlist_add_check_white_24dp), subButtonColors[1], "Checklist")
-                .addSubButton(ContextCompat.getDrawable(this, R.drawable.ic_keyboard_voice_white_24dp), subButtonColors[2], "Voice Note")
-                .addSubButton(ContextCompat.getDrawable(this, R.drawable.ic_photo_library_white_24dp), subButtonColors[3], "Gallery")
+                .addSubButton(ContextCompat.getDrawable(this, R.drawable.ic_photo_camera_white_24dp),subButtonColors[0],null )
+                .addSubButton(ContextCompat.getDrawable(this, R.drawable.ic_playlist_add_check_white_24dp), subButtonColors[1],null)
+                .addSubButton(ContextCompat.getDrawable(this, R.drawable.ic_keyboard_voice_white_24dp), subButtonColors[2],null)
+                .addSubButton(ContextCompat.getDrawable(this, R.drawable.ic_photo_library_white_24dp), subButtonColors[3],null)
                 .button(ButtonType.CIRCLE)
                 .boom(BoomType.PARABOLA)
                 .place(PlaceType.CIRCLE_4_1)
