@@ -18,7 +18,9 @@
 
 
 
-        <activity android:name=".MainActivity">
+        <activity android:name=".ProjectActivity"/>
+        <activity android:name=".MainActivity"/>
+        <activity android:name=".LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

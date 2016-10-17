@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Environment;
 
 import com.example.manobhavjain.projectkasm.Database.DatabaseHelper;
+import com.example.manobhavjain.projectkasm.Database.DbSchema;
 import com.example.manobhavjain.projectkasm.Database.DbSchema.CardsTable;
 import com.example.manobhavjain.projectkasm.Database.MyCursorWrapper;
 
@@ -40,10 +41,14 @@ public class CardsLab {
         mDatabase.insert(CardsTable.NAME,null,values);
 
     }
+
+
     public static ContentValues getContentValues(Cardbase cardbase){
         ContentValues values=new ContentValues();
         values.put(CardsTable.Cols.UUID,cardbase.getId().toString());
         values.put(CardsTable.Cols.JSONSTRING,cardbase.toJSON());
+        values.put(CardsTable.Cols.INDIVIDUAL,cardbase.getIndividual());
+        values.put(CardsTable.Cols.BACKCOLOR,cardbase.getBackcolor());
         return values;
     }
     public void deleteNote(Cardbase cardbase){
@@ -52,8 +57,38 @@ public class CardsLab {
 
     }
 
-    public List<Cardbase> getAllCards(){
+    public List<Cardbase>getListCards(ArrayList<String>listcardid){
+
+        String yo1=listcardid.toString();
+        yo1=yo1.replace("]","')").replace("[","('").replace(' ','\'').replace(",","',");
+        Cursor cursor1=mDatabase.rawQuery("Select * from "+CardsTable.NAME+" where "+CardsTable.Cols.UUID+" IN "+yo1,null);
+
+        MyCursorWrapper manuWrapper=new MyCursorWrapper(cursor1);
+
+        return getCards(manuWrapper);
+
+    }
+    public List<String>getAllCardids(){
         MyCursorWrapper manuWrapper=queryCards(null,null);
+        List<String>cardids=new ArrayList<>();
+        try{
+            while (!manuWrapper.isAfterLast()){
+                cardids.add(manuWrapper.getCardid());
+                manuWrapper.moveToNext();
+            }
+        }
+        finally {
+            manuWrapper.close();
+        }
+        return cardids;
+    }
+    public List<Cardbase> getAllIndivCards(){
+        MyCursorWrapper manuWrapper=queryCards(null,null);
+        return getCards(manuWrapper);
+
+
+    }
+    public List<Cardbase>getCards(MyCursorWrapper manuWrapper){
         List<Cardbase>cardbases=new ArrayList<>();
 
         try{
@@ -72,7 +107,7 @@ public class CardsLab {
         return cardbases;
 
     }
-    public Cardbase getCrime(UUID id){
+    public Cardbase getCard(UUID id){
         MyCursorWrapper cursor=queryCards(CardsTable.Cols.UUID+" =?",new String[]{
                 id.toString()
         });

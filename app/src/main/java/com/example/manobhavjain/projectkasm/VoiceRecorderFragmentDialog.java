@@ -118,7 +118,7 @@ public class VoiceRecorderFragmentDialog extends DialogFragment {
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        listener.onFinishRecording("file://"+audiopath);
+                        listener.onFinishRecording(audiopath);
                         dialogInterface.dismiss();
 
                     }

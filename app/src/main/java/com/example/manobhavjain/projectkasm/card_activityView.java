@@ -40,7 +40,7 @@ import java.util.UUID;
         setContentView(R.layout.card_activity);
 
         UUID uuid=(UUID)getIntent().getSerializableExtra("UUID1");
-        cardbaseList=CardsLab.get(card_activityView.this).getAllCards();
+        cardbaseList=CardsLab.get(card_activityView.this).getAllIndivCards();
 
         viewPager=(ViewPager)findViewById(R.id.card_act_pager);
 

@@ -1,5 +1,7 @@
 package com.example.manobhavjain.projectkasm;
 
+import android.graphics.Color;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -13,18 +15,38 @@ import java.util.UUID;
 public class Cardbase {
 
    private UUID uuid;
-   private ArrayList<Data> data=new ArrayList<>();
+   private ArrayList<Data> database =new ArrayList<>();
+    private int individual=0;
+    private int backcolor= Color.parseColor("#ffffff");
+
 
 
 
     public Cardbase() {
         this.uuid=UUID.randomUUID();
-        data.add(new Data("",Constants.TITLE));
+        database.add(new Data("",Constants.TITLE));
     }
 
     public Cardbase(UUID uuid) {
         this.uuid = uuid;
-        data.add(new Data("",Constants.TITLE));
+        database.add(new Data("",Constants.TITLE));
+    }
+
+
+    public int getBackcolor() {
+        return backcolor;
+    }
+
+    public void setBackcolor(int backcolor) {
+        this.backcolor = backcolor;
+    }
+
+    public int getIndividual() {
+        return individual;
+    }
+
+    public void setIndividual(int individual) {
+        this.individual = individual;
     }
 
     public UUID getId() {
@@ -32,29 +54,26 @@ public class Cardbase {
     }
 
 
-    public ArrayList<Data> getData() {
-        return data;
+    public ArrayList<Data> getDatabase() {
+        return database;
     }
 
-    public void setData(ArrayList<Data> data) {
-        this.data = data;
+    public void setDatabase(ArrayList<Data> database) {
+        this.database = database;
     }
 
-    public String getPhotoFilename(){
 
-        return "IMG_"+UUID.randomUUID().toString()+".jpg";
-    }
 
     public String toJSON(){
         Gson gson=new Gson();
         Type type=new TypeToken<ArrayList<Data>>(){}.getType();
-        String json=gson.toJson(data,type);
+        String json=gson.toJson(database,type);
         return json;
     }
     public void fromJson(String json){
         Gson gson=new Gson();
         Type type=new TypeToken<ArrayList<Data>>(){}.getType();
-        data=gson.fromJson(json,type);
+        database =gson.fromJson(json,type);
 
     }
 
@@ -63,11 +82,11 @@ public class Cardbase {
 
 class Data {
     private String data;
-    private final int TYPE;
+    private final int type;
 
     public Data(String data, int TYPE) {
         this.data = data;
-        this.TYPE=TYPE;
+        this.type =TYPE;
 
     }
 
@@ -79,26 +98,26 @@ class Data {
         return data;
     }
 
-    public int getTYPE() {
-        return TYPE;
+    public int getType() {
+        return type;
     }
 }
 
 class CheckListItemClass{
     private String title;
-    private boolean isChecked;
+    private boolean done;
 
-    public CheckListItemClass(boolean isChecked, String title) {
-        this.isChecked = isChecked;
+    public CheckListItemClass(boolean done, String title) {
+        this.done = done;
         this.title = title;
     }
 
-    public boolean isChecked() {
-        return isChecked;
+    public boolean isDone() {
+        return done;
     }
 
-    public void setChecked(boolean checked) {
-        isChecked = checked;
+    public void setDone(boolean done) {
+        this.done = done;
     }
 
     public String getTitle() {
@@ -120,7 +139,6 @@ class CheckList{
     public void setItems(ArrayList<CheckListItemClass> items) {
         this.items = items;
     }
-
 
     public String toJson(){
         Gson gson=new Gson();

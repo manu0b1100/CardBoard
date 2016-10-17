@@ -9,9 +9,20 @@ public class DbSchema {
         public static final class Cols{
             public static final String UUID="uuid";
             public static final String JSONSTRING="jsonstring";
+            public static final String INDIVIDUAL="individual";
+            public static final String BACKCOLOR="backcolor";
 
 
 
+
+        }
+    }
+    public static final class ProjectTable{
+        public static final String NAME="ProjectTable";
+        public static final class Cols{
+            public static final String PROJUUID="proj_uuid";
+            public static final String PROJTITLE="proj_title";
+            public static final String PROJJSONSTRING="projjsonstring";
         }
     }
 }

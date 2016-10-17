@@ -2,7 +2,6 @@ package com.example.manobhavjain.projectkasm;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,9 +13,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
+import com.facebook.drawee.backends.pipeline.Fresco;
+
 import java.util.List;
-import java.util.UUID;
+
+import co.dift.ui.SwipeToAction;
 
 /**
  * Created by Manobhav Jain on 8/11/2016.
@@ -24,47 +25,69 @@ import java.util.UUID;
 public class Frag_Cards_List extends Fragment {
     private RecyclerView listRecycle;
     private ListViewAdapter  listViewAdapter;
-    private FloatingActionButton fab;
+    private SwipeToAction swipeToAction;
 
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         Log.i("manobhav","oncreateview entered");
+        Fresco.initialize(getActivity());
 
         View v=inflater.inflate(R.layout.frag_list,container,false);
         listRecycle=(RecyclerView)v.findViewById(R.id.listRecycle);
         listRecycle.setLayoutManager(new LinearLayoutManager(getActivity()));
-        fab=(FloatingActionButton)v.findViewById(R.id.floatingbutton);
-        fab.setOnClickListener(new View.OnClickListener() {
+
+
+        getDataupdateUI();
+
+        swipeToAction=new SwipeToAction(listRecycle, new SwipeToAction.SwipeListener<Cardbase>() {
+
             @Override
-            public void onClick(View view) {
-                Cardbase cardbase=new Cardbase();
-                CardsLab.get(getActivity()).addnote(cardbase);
-                Intent i=card_activityEdit.newInstanceEmpty(getActivity(),cardbase.getId());
+            public boolean swipeLeft(final Cardbase card) {
+                CardsLab.get(getActivity()).deleteNote(card);
+                getDataupdateUI();
+                return true;
+            }
+
+            @Override
+            public boolean swipeRight(Cardbase card) {
+                Toast.makeText(getActivity(), "toast right", Toast.LENGTH_SHORT).show();
+                return true;
+            }
+
+            @Override
+            public void onClick(Cardbase card) {
+                Toast.makeText(getActivity(),card.getDatabase().get(0).getDataString(),Toast.LENGTH_LONG).show();
+                Intent i=card_activityEdit.newInstanceEmpty(getActivity(),card.getId());
                 startActivity(i);
+
+            }
+
+            @Override
+            public void onLongClick(Cardbase itemData) {
+
             }
         });
-        getDataupdateUI();
 
         return v;
 
     }
 
 
-    private class ListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    private class ListViewHolder extends SwipeToAction.ViewHolder<Cardbase> {
 
         private TextView title;
 
-        private UUID uuid;
+        //private UUID uuid;
 
         public ListViewHolder(View itemView) {
             super(itemView);
             title=(TextView)itemView.findViewById(R.id.title);
 
-            itemView.setOnClickListener(this);
+            //.setOnClickListener(this);
         }
 
-        public void setUuid(UUID uuid) {
+        /*public void setUuid(UUID uuid) {
             this.uuid = uuid;
         }
 
@@ -75,7 +98,7 @@ public class Frag_Cards_List extends Fragment {
             startActivity(i);
 
 
-        }
+        }*/
     }
 
     private class ListViewAdapter extends RecyclerView.Adapter<ListViewHolder>{
@@ -104,15 +127,18 @@ public class Frag_Cards_List extends Fragment {
         @Override
         public void onBindViewHolder(ListViewHolder holder, int position) {
 
-            holder.title.setText(notes.get(position).getData().get(0).getDataString());
+            Cardbase card=notes.get(position);
 
-            holder.setUuid(notes.get(position).getId());
+            holder.title.setText(notes.get(position).getDatabase().get(0).getDataString());
+
+            //holder.setUuid(notes.get(position).getId());
+            holder.data=card;
 
         }
     }
 
     private void getDataupdateUI(){
-        List<Cardbase>cardbases=CardsLab.get(getActivity()).getAllCards();
+        List<Cardbase>cardbases=CardsLab.get(getActivity()).getAllIndivCards();
 
         if(listViewAdapter==null) {
             listViewAdapter = new ListViewAdapter(cardbases);
@@ -131,35 +157,6 @@ public class Frag_Cards_List extends Fragment {
         getDataupdateUI();
     }
 
-    /*private void onRequest(){
-        Log.i("manobhav","onrequest entered");
-
-        String url="http://192.168.1.105/notes/getallnote.php";
-
-        StringRequest stringRequest=new StringRequest(url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                Gson gson=new Gson();
-                jsoNallnotes=gson.fromJson(response,JSONallnotes.class);
-                Log.i("manobhav",response);
-                Log.i("manobhav",jsoNallnotes.toString());
-                listViewAdapter=new ListViewAdapter(jsoNallnotes.getCardbase());
-                listRecycle.setAdapter(listViewAdapter);
-
-
-
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.i("manobhav","error aa gya");
-
-            }
-        });
-
-        RequestQueue requestQueue= Volley.newRequestQueue(getActivity());
-        requestQueue.add(stringRequest);
-    }*/
 
 
 }

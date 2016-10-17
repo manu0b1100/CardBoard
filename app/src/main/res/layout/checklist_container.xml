@@ -1,23 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content">
+
+    <com.shinelw.library.ColorArcProgressBar
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_gravity="center_horizontal"
+        android:id="@+id/bar1"
+        app:is_need_content="true"
+        app:front_color1="@color/colorAccent"
+        app:max_value="100"
+        app:back_width="10dp"
+        app:front_width="10dp"
+        app:total_engle="360"
+        app:is_need_unit="true"
+        app:string_unit="manu%"
+        app:back_color="@android:color/darker_gray"
+        android:layout_marginStart="34dp"
+        android:layout_marginTop="30dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="SAVE"
-        android:id="@+id/Savebutton" />
+        android:id="@+id/Savebutton"
+        android:layout_alignTop="@+id/bar1"
+        android:layout_centerHorizontal="true" />
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/recyclerChecklistItem"
+        android:layout_below="@+id/Savebutton"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="26dp" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Add Item"
-        android:id="@+id/addItemButton" />
+        android:id="@+id/addItemButton"
+        android:layout_marginTop="196dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignStart="@+id/Savebutton" />
 
-    <android.support.v7.widget.RecyclerView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/recyclerChecklistItem"/>
 
-</LinearLayout>
+</RelativeLayout>

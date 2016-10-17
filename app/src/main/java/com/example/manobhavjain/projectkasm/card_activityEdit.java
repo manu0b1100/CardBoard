@@ -2,9 +2,9 @@ package com.example.manobhavjain.projectkasm;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -23,18 +23,18 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+import android.widget.SeekBar;
 import android.widget.Toast;
 
-import com.facebook.drawee.backends.pipeline.Fresco;
-import com.facebook.drawee.backends.pipeline.PipelineDraweeController;
-import com.facebook.drawee.view.SimpleDraweeView;
-import com.facebook.imagepipeline.common.ResizeOptions;
-import com.facebook.imagepipeline.request.ImageRequest;
-import com.facebook.imagepipeline.request.ImageRequestBuilder;
+import com.flask.colorpicker.ColorPickerView;
+import com.flask.colorpicker.OnColorSelectedListener;
+import com.flask.colorpicker.builder.ColorPickerClickListener;
+import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
 import com.nightonke.boommenu.BoomMenuButton;
 import com.nightonke.boommenu.Types.BoomType;
 import com.nightonke.boommenu.Types.ButtonType;
@@ -42,12 +42,15 @@ import com.nightonke.boommenu.Types.ClickEffectType;
 import com.nightonke.boommenu.Types.DimType;
 import com.nightonke.boommenu.Types.PlaceType;
 import com.nightonke.boommenu.Util;
+import com.shinelw.library.ColorArcProgressBar;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.UUID;
+
+import co.dift.ui.SwipeToAction;
 
 /**
  * Created by Manobhav Jain on 8/11/2016.
@@ -63,7 +66,6 @@ public class card_activityEdit extends AppCompatActivity implements VoiceRecorde
 
 
     private Cardbase cardbase;
-    private MediaPlayer mediaPlayer;
 
     public static Intent newInstanceEmpty(Context context, UUID uuid){
         Intent i=new Intent(context,card_activityEdit.class);
@@ -85,9 +87,14 @@ public class card_activityEdit extends AppCompatActivity implements VoiceRecorde
         super.onCreate(savedInstanceState);
         //Fresco.initialize(card_activityEdit.this);
         setContentView(R.layout.frag_card_edit);
+        ;
         UUID uuid=(UUID)getIntent().getSerializableExtra("UUID");
-        cardbase=CardsLab.get(this).getCrime(uuid);
-        myObjects=cardbase.getData();
+        cardbase=CardsLab.get(this).getCard(uuid);
+        Log.i("lola","oncreate "+cardbase.getBackcolor());
+
+        RelativeLayout lLayout = (RelativeLayout) findViewById(R.id.editlayout);
+        lLayout.setBackgroundColor(cardbase.getBackcolor());
+        myObjects=cardbase.getDatabase();
         if(myObjects.size()<=1)
         myObjects.add(new Data("",Constants.NOTE));
         boomMenuButton=(BoomMenuButton)findViewById(R.id.boom);
@@ -102,12 +109,16 @@ public class card_activityEdit extends AppCompatActivity implements VoiceRecorde
 
 
 
+
+
+
+
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        cardbase.setData(myObjects);
+        cardbase.setDatabase(myObjects);
         Log.i("manobhav",myObjects.get(0).getDataString());
         if(myObjects.get(0).getDataString().contentEquals("")){
             CardsLab.get(card_activityEdit.this).deleteNote(cardbase);
@@ -127,7 +138,7 @@ public class card_activityEdit extends AppCompatActivity implements VoiceRecorde
 
         @Override
         public void oncheckchanged(boolean ischecked, int position) {
-            checkList.getItems().get(position).setChecked(ischecked);
+            checkList.getItems().get(position).setDone(ischecked);
         }
 
         @Override
@@ -144,12 +155,14 @@ public class card_activityEdit extends AppCompatActivity implements VoiceRecorde
             private Button AddItemButton;
             private RecyclerView recyclerView;
             private  Button SaveButton;
+            private ColorArcProgressBar capb;
 
             public CheckListViewHolder(View itemView) {
                 super(itemView);
                 AddItemButton=(Button)itemView.findViewById(R.id.addItemButton);
                 recyclerView=(RecyclerView)itemView.findViewById(R.id.recyclerChecklistItem);
                 SaveButton=(Button) itemView.findViewById(R.id.Savebutton);
+                capb=(ColorArcProgressBar)itemView.findViewById(R.id.bar1);
             }
 
         }
@@ -157,15 +170,17 @@ public class card_activityEdit extends AppCompatActivity implements VoiceRecorde
 
 
         private class AudioViewHolder extends RecyclerView.ViewHolder{
-            private Button PLbutton;
-
+            private FrameLayout frame;
             public AudioViewHolder(View itemView) {
                 super(itemView);
-                PLbutton=(Button)itemView.findViewById(R.id.PLbutton);
+                frame=(FrameLayout)itemView.findViewWithTag("container1");
+                //frame.setId((int)(new Date()).getTime());
+                frame.setId(View.generateViewId());
+
             }
 
-            public Button getPLbutton() {
-                return PLbutton;
+            public FrameLayout getFrame() {
+                return frame;
             }
         }
 
@@ -346,15 +361,15 @@ public class card_activityEdit extends AppCompatActivity implements VoiceRecorde
         @Override
         public int getItemViewType(int position) {
 
-            if(manuObjects.get(position).getTYPE()==Constants.TITLE)
+            if(manuObjects.get(position).getType()==Constants.TITLE)
                 return Constants.TITLE;
-            else if(manuObjects.get(position).getTYPE()==Constants.NOTE)
+            else if(manuObjects.get(position).getType()==Constants.NOTE)
                 return Constants.NOTE;
-            else if(manuObjects.get(position).getTYPE()==Constants.IMAGE)
+            else if(manuObjects.get(position).getType()==Constants.IMAGE)
                 return Constants.IMAGE;
-            else if(manuObjects.get(position).getTYPE()==Constants.AUDIONOTE)
+            else if(manuObjects.get(position).getType()==Constants.AUDIONOTE)
                 return Constants.AUDIONOTE;
-            else if(manuObjects.get(position).getTYPE()==Constants.CHECKLIST)
+            else if(manuObjects.get(position).getType()==Constants.CHECKLIST)
                 return Constants.CHECKLIST;
 
 
@@ -384,25 +399,15 @@ public class card_activityEdit extends AppCompatActivity implements VoiceRecorde
     }
         private void configurenavh(AudioViewHolder avh, final int position){
 
-            avh.getPLbutton().setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Toast.makeText(card_activityEdit.this, "play  button dabaya", Toast.LENGTH_SHORT).show();
-                    mediaPlayer = new MediaPlayer();
-                    try{
-                        mediaPlayer.setDataSource(manuObjects.get(position).getDataString());
-                        mediaPlayer.prepare();}
+            getSupportFragmentManager().beginTransaction()
+                    .add(avh.getFrame().getId(), CustomWaveFragment.newInstance(manuObjects.get(position).getDataString()))
+                    .commit();
 
-                    catch (Exception e){
-                        e.printStackTrace();
-                    }
-                    mediaPlayer.start();
-                }
-            });
         }
-        private void configurecvh(CheckListViewHolder cvh, final int position){
+        private void configurecvh(final CheckListViewHolder cvh, final int position){
             checkList=new CheckList();
-            if(manuObjects.get(position).getDataString()!="")
+
+            if(!manuObjects.get(position).getDataString().equals(""))
             checkList.fromJson(manuObjects.get(position).getDataString());
             checklistAdapter=new ChecklistAdapter(checkList.getItems(),card_activityEdit.this);
             checklistAdapter.setOnItemAddedListener(AdapterClass.this);
@@ -419,8 +424,28 @@ public class card_activityEdit extends AppCompatActivity implements VoiceRecorde
                 @Override
                 public void onClick(View view) {
                     myObjects.get(position).setDataString(checkList.toJson());
+                    float c=0;
+                    ArrayList<CheckListItemClass>items=checkList.getItems();
+
+                    for(CheckListItemClass item:items){
+                        if(item.isDone()==true)
+                            c++;
+
+                    }
+                    Log.i("manobhav","value "+(c/checkList.getItems().size())*100);
+                    cvh.capb.setCurrentValues((c/checkList.getItems().size())*100);
                 }
             });
+            float c=0;
+            ArrayList<CheckListItemClass>items=checkList.getItems();
+
+           for(CheckListItemClass item:items){
+               if(item.isDone()==true)
+                   c++;
+
+           }
+            Log.i("manobhav","value "+(c/checkList.getItems().size())*100);
+            cvh.capb.setCurrentValues((c/checkList.getItems().size())*100);
 
         }
 
@@ -442,15 +467,53 @@ public class card_activityEdit extends AppCompatActivity implements VoiceRecorde
             case R.id.menu_new_item:
                 addnew();
                 return true;
+            case R.id.menu_backcolor_item:
+                changeback();
+                return true;
             case R.id.menu_del_item:
-                CardsLab.get(card_activityEdit.this).deleteNote(cardbase);
+                CardsLab.get(this).deleteNote(cardbase);
                 finish();
                 return true;
+
+
 
             default:
                 return super.onOptionsItemSelected(item);
 
         }
+    }
+
+    public void changeback(){
+        ColorPickerDialogBuilder
+                .with(card_activityEdit.this)
+                .setTitle("Choose color")
+                .initialColor(0xffffffff)
+                .wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
+                .density(12)
+                .setOnColorSelectedListener(new OnColorSelectedListener() {
+                    @Override
+                    public void onColorSelected(int selectedColor) {
+                        Toast.makeText(card_activityEdit.this, "onColorSelected: 0x" + Integer.toHexString(selectedColor), Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .setPositiveButton("ok", new ColorPickerClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int selectedColor, Integer[] allColors) {
+                        RelativeLayout lLayout = (RelativeLayout) findViewById(R.id.editlayout);
+                        lLayout.setBackgroundColor(selectedColor);
+
+                        cardbase.setBackcolor(selectedColor);
+                        Log.i("lola","color"+cardbase.getBackcolor());
+                    }
+                })
+                .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                })
+                .build()
+                .show();
+
     }
 
     public void addnew(){

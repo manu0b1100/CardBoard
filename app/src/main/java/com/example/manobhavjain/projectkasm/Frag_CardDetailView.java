@@ -55,7 +55,7 @@ import java.util.UUID;
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         UUID uuid=(UUID) getArguments().getSerializable("UUID");
-        cardbase=CardsLab.get(getActivity()).getCrime(uuid);
+        cardbase=CardsLab.get(getActivity()).getCard(uuid);
         setHasOptionsMenu(true);
 
     }

@@ -107,7 +107,7 @@ public class ChecklistAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
         CheckListItemViewHolder hold=(CheckListItemViewHolder)holder;
         hold.getTitle().setText(items.get(position).getTitle());
-        hold.getIsChecked().setChecked(items.get(position).isChecked());
+        hold.getIsChecked().setChecked(items.get(position).isDone());
 
     }
 }
