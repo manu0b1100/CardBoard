@@ -83,7 +83,7 @@ public class FragProjList extends Fragment{
 
         public ListViewHolder(View itemView) {
             super(itemView);
-            title=(TextView)itemView.findViewById(R.id.title);
+            title=(TextView)itemView.findViewById(R.id.item);
 
 
         }

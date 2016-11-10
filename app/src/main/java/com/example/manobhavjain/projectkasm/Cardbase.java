@@ -83,6 +83,8 @@ public class Cardbase {
 class Data {
     private String data;
     private final int type;
+    private ArrayList<CheckListItemClass>checklist=new ArrayList<>();
+
 
     public Data(String data, int TYPE) {
         this.data = data;
@@ -101,15 +103,19 @@ class Data {
     public int getType() {
         return type;
     }
+
+    public ArrayList<CheckListItemClass> getChecklist() {
+        return checklist;
+    }
 }
 
 class CheckListItemClass{
-    private String title;
+    private String item;
     private boolean done;
 
     public CheckListItemClass(boolean done, String title) {
         this.done = done;
-        this.title = title;
+        this.item = title;
     }
 
     public boolean isDone() {
@@ -120,12 +126,12 @@ class CheckListItemClass{
         this.done = done;
     }
 
-    public String getTitle() {
-        return title;
+    public String getItem() {
+        return item;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setItem(String item) {
+        this.item = item;
     }
 }
 

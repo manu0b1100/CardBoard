@@ -1,6 +1,7 @@
 package com.example.manobhavjain.projectkasm;
 
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -22,13 +23,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.SeekBar;
 import android.widget.Toast;
 
 import com.flask.colorpicker.ColorPickerView;
@@ -49,8 +49,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.UUID;
-
-import co.dift.ui.SwipeToAction;
 
 /**
  * Created by Manobhav Jain on 8/11/2016.
@@ -143,7 +141,7 @@ public class card_activityEdit extends AppCompatActivity implements VoiceRecorde
 
         @Override
         public void ontitlechanged(String title, int position) {
-            checkList.getItems().get(position).setTitle(title);
+            checkList.getItems().get(position).setItem(title);
 
         }
 
@@ -254,6 +252,20 @@ public class card_activityEdit extends AppCompatActivity implements VoiceRecorde
             }
 
         }
+        private class FileViewHolder extends RecyclerView.ViewHolder{
+            private Button button;
+
+            public FileViewHolder(View itemView) {
+                super(itemView);
+                button=(Button)itemView.findViewById(R.id.Filebutton);
+            }
+
+
+            public Button getButton() {
+                return button;
+            }
+
+        }
 
         private class ImageViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
@@ -311,6 +323,10 @@ public class card_activityEdit extends AppCompatActivity implements VoiceRecorde
                     View view5=inflater.inflate(R.layout.checklist_container,parent,false);
                     viewHolder=new CheckListViewHolder(view5);
                     break;
+                case Constants.FILE:
+                    View view6=inflater.inflate(R.layout.file_layout,parent,false);
+                    viewHolder=new FileViewHolder(view6);
+                    break;
 
                 default:
                     View v = inflater.inflate(android.R.layout.simple_list_item_1, parent, false);
@@ -350,6 +366,10 @@ public class card_activityEdit extends AppCompatActivity implements VoiceRecorde
                     CheckListViewHolder cvh=(CheckListViewHolder)holder;
                     configurecvh(cvh,position);
                     break;
+                case Constants.FILE:
+                    FileViewHolder fvh=(FileViewHolder) holder;
+                    configurefvh(fvh,position);
+                    break;
                 default:
             }
 
@@ -360,20 +380,50 @@ public class card_activityEdit extends AppCompatActivity implements VoiceRecorde
 
         @Override
         public int getItemViewType(int position) {
-
-            if(manuObjects.get(position).getType()==Constants.TITLE)
-                return Constants.TITLE;
-            else if(manuObjects.get(position).getType()==Constants.NOTE)
+            int twinkle=manuObjects.get(position).getType();
+            if(twinkle==Constants.DESC)
                 return Constants.NOTE;
-            else if(manuObjects.get(position).getType()==Constants.IMAGE)
-                return Constants.IMAGE;
-            else if(manuObjects.get(position).getType()==Constants.AUDIONOTE)
-                return Constants.AUDIONOTE;
-            else if(manuObjects.get(position).getType()==Constants.CHECKLIST)
-                return Constants.CHECKLIST;
+            else
+            return twinkle;
 
+        }
+        private void configurefvh(FileViewHolder fvh, final int position){
+            fvh.button.setText(manuObjects.get(position).getDataString());
+            fvh.button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    MimeTypeMap myMime = MimeTypeMap.getSingleton();
+                    Intent newIntent = new Intent(Intent.ACTION_VIEW);
 
-            return -1;
+                    String mimeType = myMime.getMimeTypeFromExtension(fileExt(manuObjects.get(position).getDataString()).substring(1));
+                    newIntent.setDataAndType(Uri.parse(manuObjects.get(position).getDataString()),mimeType);
+                    newIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    try {
+                       startActivity(newIntent);
+                    } catch (ActivityNotFoundException e) {
+                        Toast.makeText(card_activityEdit.this, "No handler for this type of file.", Toast.LENGTH_LONG).show();
+                    }
+                }
+            });
+
+        }
+        private String fileExt(String url){
+            if (url.indexOf("?") > -1) {
+                url = url.substring(0, url.indexOf("?"));
+            }
+            if (url.lastIndexOf(".") == -1) {
+                return null;
+            } else {
+                String ext = url.substring(url.lastIndexOf(".") + 1);
+                if (ext.indexOf("%") > -1) {
+                    ext = ext.substring(0, ext.indexOf("%"));
+                }
+                if (ext.indexOf("/") > -1) {
+                    ext = ext.substring(0, ext.indexOf("/"));
+                }
+                return ext.toLowerCase();
+
+            }
         }
         private void configurevh1(TitleViewHolder vh1, int position) {
             Data data = manuObjects.get(position);

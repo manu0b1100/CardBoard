@@ -1,80 +1,117 @@
-/*package com.example.manobhavjain.projectkasm;
+package com.example.manobhavjain.projectkasm;
 
+import android.app.DownloadManager;
 import android.content.ContentValues;
 import android.content.Context;
+import android.net.Uri;
+import android.os.Environment;
+import android.telephony.gsm.GsmCellLocation;
+import android.util.Log;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
+import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.io.File;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 
 public class SyncData {
-    private
 
+   private  ArrayList<Cardbase>manu;
+    private  Context context;
+
+    public SyncData(Context context) {
+        this.context = context;
+    }
 
     void sync(){
-        List<Cardbase>cards=CardsLab.get(context).getAllIndivCards();
 
-        for(final Cardbase card:cards) {
+        StringRequest request=new StringRequest("https://api.myjson.com/bins/z8tg", new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.i("manobhav",response);
+                Gson gson = new Gson();
+                Type type = new TypeToken<ArrayList<Cardbase>>() {
+                }.getType();
+                manu = gson.fromJson(response, type);
+                Log.i("manobhav",manu.get(0).getId().toString());
+                for(Cardbase card:manu){
+                    ArrayList<Data>twinkle=card.getDatabase();
+                    for(Data data:twinkle){
+                        if(data.getType()==Constants.IMAGE){
 
+                            Uri image_uri=Uri.parse(Constants.IMAGEURL+data.getDataString());
+                            downloaddata(image_uri,data.getDataString());
+                            File file = new File(context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), data.getDataString());
+                            // new File(Environment.DIRECTORY_DOWNLOADS,)
+                            data.setDataString(Uri.fromFile(file).toString());
+                            Log.i("manobhav","path stored"+data);
+                        }
+                        else if(data.getType()==Constants.FILE){
+                            Uri image_uri=Uri.parse(Constants.FILEURL+data.getDataString());
+                            downloaddata(image_uri,data.getDataString());
+                            File file = new File(context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), data.getDataString());
+                            // new File(Environment.DIRECTORY_DOWNLOADS,)
+                            data.setDataString(Uri.fromFile(file).toString());
+                            Log.i("manobhav","path stored"+data);
 
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, Config.SYNCURL, new Response.Listener<String>() {
-                @Override
-                public void onResponse(String response) {
-                    JSONArray jsonarray = null;
-                    try {
-                        jsonarray = new JSONArray(response);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+                        }
+                        else if(data.getType()==Constants.CHECKLIST){
+                            Gson gson1=new Gson();
+                            Type type1=new TypeToken<ArrayList<CheckListItemClass>>(){}.getType();
+                            String Json=gson1.toJson(data.getChecklist(),type1);
+                            data.setDataString(Json);
+
+                        }
+
                     }
-                    try {
-                        if(jsonarray.getJSONObject(0)==null && jsonarray.getJSONObject(1)==null){
-                            copy(a,b);
-                            insert(status,a);
-                        }
-                        else if(jsonarray.getJSONObject(0)==null && jsonarray.getJSONObject(1)!=null){
-                            CardsLab.get(context).deleteNote(card);
-                            delete(status,a);
-                        }
-                        else if(jsonarray.getJSONObject(0)!=null && jsonarray.getJSONObject(1)==null){
-                            insert(status,a);
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+
+                    CardsLab.get(context).addnote(card);
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
 
 
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
+            }
+        });
 
-                }
-            }) {
-                @Override
-                protected Map<String, String> getParams() throws AuthFailureError {
-                    Map<String, String> params = new HashMap<>();
-                    //Adding parameters to request
-                    params.put(Config.UUID, card.getId().toString());
-                    //returning parameter
-                    return params;
-                }
-            };
-        }
+        RequestQueue requestQueue=Volley.newRequestQueue(context);
+        requestQueue.add(request);
+
+
+        
+    }
+    private void downloaddata(Uri image_uri,String name){
+        String name1="";
+        name1=name1.concat(name);
+        DownloadManager downloadManager= (DownloadManager)context.getSystemService(Context.DOWNLOAD_SERVICE);
+        DownloadManager.Request request=new DownloadManager.Request(image_uri);
+        request.setTitle("Image Download");
+        request.setDestinationInExternalFilesDir(context,Environment.DIRECTORY_DOWNLOADS,name1);
+
+        downloadManager.enqueue(request);
 
     }
 
 
 
 
+
 }
-*/

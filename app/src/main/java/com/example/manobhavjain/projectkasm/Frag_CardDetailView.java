@@ -46,7 +46,7 @@ import java.util.UUID;
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        textViewtitle.setText(cardbase.getTitle());
+        textViewtitle.setText(cardbase.getItem());
         textViewdetails.setText(cardbase.getNote());
 
     }
@@ -87,7 +87,7 @@ import java.util.UUID;
         Intent i=new Intent();
         i.setAction(Intent.ACTION_SEND);
         i.setType("text/plain");
-        i.putExtra(Intent.EXTRA_TEXT,cardbase.getTitle()+"\n"+cardbase.getNote());
+        i.putExtra(Intent.EXTRA_TEXT,cardbase.getItem()+"\n"+cardbase.getNote());
         startActivity(Intent.createChooser(i,"Share Note"));
 
 

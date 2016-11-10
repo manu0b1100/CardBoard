@@ -36,7 +36,7 @@ public class testActivity extends AppCompatActivity {
         UUID uuid=(UUID)getIntent().getSerializableExtra("UUID1");
 
         Cardbase cardbase=CardsLab.get(this).getCard(uuid);
-        textViewtitle.setText(cardbase.getTitle());
+        textViewtitle.setText(cardbase.getItem());
         textViewdetails.setText(cardbase.getNote());
 
 

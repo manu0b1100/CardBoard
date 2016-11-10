@@ -192,7 +192,7 @@ public class MainActivity extends AppCompatActivity implements OnMenuItemClickLi
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.mainactivity, menu);
+        inflater.inflate(R.menu.mact, menu);
         return true;
     }
 
@@ -209,6 +209,9 @@ public class MainActivity extends AppCompatActivity implements OnMenuItemClickLi
     }
     private void addCard(){
         Cardbase cardbase=new Cardbase();
+
+
+
         CardsLab.get(this).addnote(cardbase);
         Intent i=card_activityEdit.newInstanceEmpty(this,cardbase.getId());
         startActivity(i);
@@ -240,6 +243,10 @@ public class MainActivity extends AppCompatActivity implements OnMenuItemClickLi
         alert.show();
     }
 
+    private void sync(){
+        SyncData syncData=new SyncData(MainActivity.this);
+        syncData.sync();
+    }
     @Override
     public void onMenuItemClick(View clickedView, int position) {
         switch (position){
@@ -252,7 +259,7 @@ public class MainActivity extends AppCompatActivity implements OnMenuItemClickLi
                 break;
             case 2:
                 Toast.makeText(this, "2 clicked", Toast.LENGTH_SHORT).show();
-                addProject();
+                sync();
                 break;
             case 3:
                 Toast.makeText(this, "3 clicked", Toast.LENGTH_SHORT).show();

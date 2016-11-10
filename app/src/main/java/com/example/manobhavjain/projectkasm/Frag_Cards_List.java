@@ -82,7 +82,7 @@ public class Frag_Cards_List extends Fragment {
 
         public ListViewHolder(View itemView) {
             super(itemView);
-            title=(TextView)itemView.findViewById(R.id.title);
+            title=(TextView)itemView.findViewById(R.id.item);
 
             //.setOnClickListener(this);
         }
