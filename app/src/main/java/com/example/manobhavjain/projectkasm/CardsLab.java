@@ -45,7 +45,7 @@ public class CardsLab {
 
     public static ContentValues getContentValues(Cardbase cardbase){
         ContentValues values=new ContentValues();
-        values.put(CardsTable.Cols.UUID,cardbase.getId().toString());
+        values.put(CardsTable.Cols.UUID,cardbase.getId());
         values.put(CardsTable.Cols.JSONSTRING,cardbase.toJSON());
         values.put(CardsTable.Cols.INDIVIDUAL,cardbase.getIndividual());
         values.put(CardsTable.Cols.BACKCOLOR,cardbase.getBackcolor());
@@ -53,7 +53,7 @@ public class CardsLab {
     }
     public void deleteNote(Cardbase cardbase){
 
-        mDatabase.delete(CardsTable.NAME,CardsTable.Cols.UUID + "=?",new String[]{cardbase.getId().toString()});
+        mDatabase.delete(CardsTable.NAME,CardsTable.Cols.UUID + "=?",new String[]{cardbase.getId()});
 
     }
 
@@ -107,9 +107,9 @@ public class CardsLab {
         return cardbases;
 
     }
-    public Cardbase getCard(UUID id){
+    public Cardbase getCard(String id){
         MyCursorWrapper cursor=queryCards(CardsTable.Cols.UUID+" =?",new String[]{
-                id.toString()
+                id
         });
         try{
             if(cursor.getCount()==0)
@@ -136,7 +136,7 @@ public class CardsLab {
     }
 
     public void updateCard (Cardbase crime){
-        String uuidString=crime.getId().toString();
+        String uuidString=crime.getId();
         ContentValues values=getContentValues(crime);
 
         mDatabase.update(CardsTable.NAME,values,CardsTable.Cols.UUID + "=?",new String[]{uuidString});

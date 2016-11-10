@@ -85,7 +85,7 @@ public class FragListInsideProject extends Fragment{
 
         private TextView title;
 
-        private UUID uuid;
+        private String uuid;
 
         public ListViewHolder(View itemView) {
             super(itemView);
@@ -94,7 +94,7 @@ public class FragListInsideProject extends Fragment{
             itemView.setOnClickListener(this);
         }
 
-        public void setUuid(UUID uuid) {
+        public void setUuid(String uuid) {
             this.uuid = uuid;
         }
 

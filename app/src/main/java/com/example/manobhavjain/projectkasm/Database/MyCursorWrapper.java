@@ -35,7 +35,7 @@ public class MyCursorWrapper extends CursorWrapper {
         int ind=getInt(getColumnIndex(CardsTable.Cols.INDIVIDUAL));
         int bc=getInt(getColumnIndex(CardsTable.Cols.BACKCOLOR));
 
-        Cardbase cardbase=new Cardbase(UUID.fromString(uuid));
+        Cardbase cardbase=new Cardbase(uuid);
         cardbase.fromJson(jsonstring);
         cardbase.setIndividual(ind);
         cardbase.setBackcolor(bc);

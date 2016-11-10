@@ -49,7 +49,7 @@ public class SyncData {
                 Type type = new TypeToken<ArrayList<Cardbase>>() {
                 }.getType();
                 manu = gson.fromJson(response, type);
-                Log.i("manobhav",manu.get(0).getId().toString());
+                Log.i("manobhav",manu.get(0).getId());
                 for(Cardbase card:manu){
                     ArrayList<Data>twinkle=card.getDatabase();
                     for(Data data:twinkle){

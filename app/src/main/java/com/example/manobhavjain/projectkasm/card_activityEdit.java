@@ -65,7 +65,7 @@ public class card_activityEdit extends AppCompatActivity implements VoiceRecorde
 
     private Cardbase cardbase;
 
-    public static Intent newInstanceEmpty(Context context, UUID uuid){
+    public static Intent newInstanceEmpty(Context context, String uuid){
         Intent i=new Intent(context,card_activityEdit.class);
         i.putExtra("UUID",uuid);
         return i;
@@ -86,7 +86,7 @@ public class card_activityEdit extends AppCompatActivity implements VoiceRecorde
         //Fresco.initialize(card_activityEdit.this);
         setContentView(R.layout.frag_card_edit);
         ;
-        UUID uuid=(UUID)getIntent().getSerializableExtra("UUID");
+        String uuid=(String)getIntent().getSerializableExtra("UUID");
         cardbase=CardsLab.get(this).getCard(uuid);
         Log.i("lola","oncreate "+cardbase.getBackcolor());
 

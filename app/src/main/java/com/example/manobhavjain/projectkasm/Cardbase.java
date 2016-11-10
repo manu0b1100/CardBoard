@@ -14,7 +14,7 @@ import java.util.UUID;
 */
 public class Cardbase {
 
-   private UUID uuid;
+   private String key;
    private ArrayList<Data> database =new ArrayList<>();
     private int individual=0;
     private int backcolor= Color.parseColor("#ffffff");
@@ -23,12 +23,12 @@ public class Cardbase {
 
 
     public Cardbase() {
-        this.uuid=UUID.randomUUID();
+        this.key =UUID.randomUUID().toString();
         database.add(new Data("",Constants.TITLE));
     }
 
-    public Cardbase(UUID uuid) {
-        this.uuid = uuid;
+    public Cardbase(String key) {
+        this.key = key;
         database.add(new Data("",Constants.TITLE));
     }
 
@@ -49,8 +49,8 @@ public class Cardbase {
         this.individual = individual;
     }
 
-    public UUID getId() {
-        return uuid;
+    public String getId() {
+        return key;
     }
 
 
