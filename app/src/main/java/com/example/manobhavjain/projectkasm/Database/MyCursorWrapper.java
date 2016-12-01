@@ -2,6 +2,7 @@ package com.example.manobhavjain.projectkasm.Database;
 
 import android.database.Cursor;
 import android.database.CursorWrapper;
+import android.util.Pair;
 
 import com.example.manobhavjain.projectkasm.Cardbase;
 import com.example.manobhavjain.projectkasm.Database.DbSchema.CardsTable;
@@ -22,6 +23,13 @@ public class MyCursorWrapper extends CursorWrapper {
 
 
     }
+    public Pair getCardMap(){
+        String uuid=getString(getColumnIndex(CardsTable.Cols.UUID));
+        Integer change=getInt(getColumnIndex(CardsTable.Cols.CHANGE));
+
+        return Pair.create(uuid,change);
+
+    }
     public String getCardid(){
         String uuid=getString(getColumnIndex(CardsTable.Cols.UUID));
         return uuid;
@@ -34,11 +42,13 @@ public class MyCursorWrapper extends CursorWrapper {
 
         int ind=getInt(getColumnIndex(CardsTable.Cols.INDIVIDUAL));
         int bc=getInt(getColumnIndex(CardsTable.Cols.BACKCOLOR));
+        int change=getInt(getColumnIndex(CardsTable.Cols.CHANGE));
 
         Cardbase cardbase=new Cardbase(uuid);
         cardbase.fromJson(jsonstring);
         cardbase.setIndividual(ind);
         cardbase.setBackcolor(bc);
+        cardbase.setChange(change);
 
         return cardbase;
 

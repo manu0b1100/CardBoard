@@ -20,17 +20,7 @@ import java.util.ArrayList;
 public class ChecklistAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     private ArrayList<CheckListItemClass> items;
     private Context context;
-    private CheckListListener listener;
 
-
-    public interface CheckListListener{
-
-        void ontitlechanged(String title, int position);
-        void oncheckchanged(boolean ischecked, int position);
-    }
-    public void setOnItemAddedListener(CheckListListener listener){
-        this.listener=listener;
-    }
 
     public ChecklistAdapter(ArrayList<CheckListItemClass> items,Context context) {
         this.items = items;
@@ -41,14 +31,15 @@ public class ChecklistAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         private EditText title;
         private CheckBox isChecked;
 
-        public CheckListItemViewHolder(View itemView) {
+        public CheckListItemViewHolder(final View itemView) {
             super(itemView);
             title=(EditText) itemView.findViewById(R.id.checktitle);
             isChecked=(CheckBox)itemView.findViewById(R.id.checkBox);
             isChecked.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                    listener.oncheckchanged(b,getAdapterPosition());
+
+                    items.get(getAdapterPosition()).setDone(b);
 
                 }
             });
@@ -60,8 +51,8 @@ public class ChecklistAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
                 @Override
                 public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                    listener.ontitlechanged(charSequence.toString(),getAdapterPosition());
 
+                    items.get(getAdapterPosition()).setItem(charSequence.toString());
                 }
 
                 @Override
@@ -72,17 +63,7 @@ public class ChecklistAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
         }
 
-        public CheckBox getIsChecked() {
-            return isChecked;
-        }
 
-        public void setIsChecked(CheckBox isChecked) {
-            this.isChecked = isChecked;
-        }
-
-        public TextView getTitle() {
-            return title;
-        }
 
         public void setTitle(EditText title) {
             this.title = title;
@@ -106,8 +87,8 @@ public class ChecklistAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
 
         CheckListItemViewHolder hold=(CheckListItemViewHolder)holder;
-        hold.getTitle().setText(items.get(position).getItem());
-        hold.getIsChecked().setChecked(items.get(position).isDone());
+        hold.title.setText(items.get(position).getItem());
+        hold.isChecked.setChecked(items.get(position).isDone());
 
     }
 }

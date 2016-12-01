@@ -63,7 +63,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         //If we will get true
         if(loggedIn){
-            //We will start the Profile Activity
+            //We will startUpdatingCards the Profile Activity
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(intent);
         }

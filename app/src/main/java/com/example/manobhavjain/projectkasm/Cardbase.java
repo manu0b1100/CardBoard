@@ -17,6 +17,7 @@ public class Cardbase {
    private String key;
    private ArrayList<Data> database =new ArrayList<>();
     private int individual=0;
+    private int change=0;
     private int backcolor= Color.parseColor("#ffffff");
 
 
@@ -32,6 +33,13 @@ public class Cardbase {
         database.add(new Data("",Constants.TITLE));
     }
 
+    public int getChange() {
+        return change;
+    }
+
+    public void setChange(int change) {
+        this.change = change;
+    }
 
     public int getBackcolor() {
         return backcolor;

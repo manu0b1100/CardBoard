@@ -8,26 +8,20 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.yalantis.contextmenu.lib.ContextMenuDialogFragment;
 import com.yalantis.contextmenu.lib.MenuObject;
 import com.yalantis.contextmenu.lib.MenuParams;
 import com.yalantis.contextmenu.lib.interfaces.OnMenuItemClickListener;
-import com.yalantis.contextmenu.lib.interfaces.OnMenuItemLongClickListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -133,6 +127,8 @@ public class MainActivity extends AppCompatActivity implements OnMenuItemClickLi
 
         MenuObject like = new MenuObject("Add Project");
         like.setResource(R.drawable.icn_2);
+        MenuObject sync = new MenuObject("Sync");
+        like.setResource(R.drawable.icn_2);
 
         MenuObject addFr = new MenuObject("Logout");
         like.setResource(R.drawable.icn_3);
@@ -142,6 +138,7 @@ public class MainActivity extends AppCompatActivity implements OnMenuItemClickLi
         menuObjects.add(close);
         menuObjects.add(send);
         menuObjects.add(like);
+        menuObjects.add(sync);
         menuObjects.add(addFr);
 
         return menuObjects;
@@ -245,7 +242,7 @@ public class MainActivity extends AppCompatActivity implements OnMenuItemClickLi
 
     private void sync(){
         SyncData syncData=new SyncData(MainActivity.this);
-        syncData.sync();
+        syncData.startUpdatingCards();
     }
     @Override
     public void onMenuItemClick(View clickedView, int position) {
@@ -259,9 +256,15 @@ public class MainActivity extends AppCompatActivity implements OnMenuItemClickLi
                 break;
             case 2:
                 Toast.makeText(this, "2 clicked", Toast.LENGTH_SHORT).show();
-                sync();
+                addProject();
+                //sync();
                 break;
             case 3:
+                Toast.makeText(this, "2 clicked", Toast.LENGTH_SHORT).show();
+
+                sync();
+                break;
+            case 4:
                 Toast.makeText(this, "3 clicked", Toast.LENGTH_SHORT).show();
                 logout();
                 break;

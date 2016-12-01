@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Environment;
+import android.util.Pair;
 
 import com.example.manobhavjain.projectkasm.Database.DatabaseHelper;
 import com.example.manobhavjain.projectkasm.Database.DbSchema;
@@ -13,6 +14,7 @@ import com.example.manobhavjain.projectkasm.Database.MyCursorWrapper;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -49,11 +51,17 @@ public class CardsLab {
         values.put(CardsTable.Cols.JSONSTRING,cardbase.toJSON());
         values.put(CardsTable.Cols.INDIVIDUAL,cardbase.getIndividual());
         values.put(CardsTable.Cols.BACKCOLOR,cardbase.getBackcolor());
+        values.put(CardsTable.Cols.CHANGE,cardbase.getChange());
         return values;
     }
     public void deleteNote(Cardbase cardbase){
 
         mDatabase.delete(CardsTable.NAME,CardsTable.Cols.UUID + "=?",new String[]{cardbase.getId()});
+
+    }
+    public void deleteNote(String key){
+
+        mDatabase.delete(CardsTable.NAME,CardsTable.Cols.UUID + "=?",new String[]{key});
 
     }
 
@@ -67,6 +75,22 @@ public class CardsLab {
 
         return getCards(manuWrapper);
 
+    }
+    public HashMap getCardMapping(){
+
+        HashMap<String,Integer> manumap=new HashMap();
+        MyCursorWrapper manuWrapper=queryCards(null,null);
+        try{
+            while(!manuWrapper.isAfterLast()){
+                Pair<String,Integer> p=manuWrapper.getCardMap();
+                manumap.put(p.first,p.second);
+                manuWrapper.moveToNext();
+            }
+        }
+        finally {
+            manuWrapper.close();
+        }
+        return manumap;
     }
     public List<String>getAllCardids(){
         MyCursorWrapper manuWrapper=queryCards(null,null);

@@ -14,6 +14,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -47,6 +48,7 @@ import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.UUID;
 
@@ -100,17 +102,9 @@ public class card_activityEdit extends AppCompatActivity implements VoiceRecorde
         recyclerView.setLayoutManager(new LinearLayoutManager(card_activityEdit.this));
         manuAdapter=new AdapterClass(myObjects);
         recyclerView.setAdapter(manuAdapter);
-
-
-
-
-
-
-
-
-
-
-
+        ItemTouchHelper.Callback callback=new SimpleItemTouchHelperCallback(manuAdapter);
+        ItemTouchHelper itemTouchHelper=new ItemTouchHelper(callback);
+        itemTouchHelper.attachToRecyclerView(recyclerView);
     }
 
     @Override
@@ -128,22 +122,13 @@ public class card_activityEdit extends AppCompatActivity implements VoiceRecorde
 
 
 
-    private class AdapterClass extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements ChecklistAdapter.CheckListListener{
+    private class AdapterClass extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements ItemTouchHelperAdapter{
 
         private ArrayList<Data> manuObjects;
         private CheckList checkList;
         private ChecklistAdapter checklistAdapter;
 
-        @Override
-        public void oncheckchanged(boolean ischecked, int position) {
-            checkList.getItems().get(position).setDone(ischecked);
-        }
 
-        @Override
-        public void ontitlechanged(String title, int position) {
-            checkList.getItems().get(position).setItem(title);
-
-        }
 
         public AdapterClass(ArrayList<Data> manuObjects) {
             this.manuObjects = manuObjects;
@@ -289,6 +274,7 @@ public class card_activityEdit extends AppCompatActivity implements VoiceRecorde
                 startActivity(manu);
 
             }
+
         }
 
 
@@ -344,6 +330,29 @@ public class card_activityEdit extends AppCompatActivity implements VoiceRecorde
         }
 
         @Override
+        public void onItemMoved(int from, int to) {
+            if (from < to) {
+                for (int i = from; i < to; i++) {
+
+                    Collections.swap(manuObjects, i, i + 1);
+                }
+            } else {
+                for (int i = from; i > to; i--) {
+                    Collections.swap(manuObjects, i, i - 1);
+                }
+            }
+            notifyItemMoved(from, to);
+
+        }
+
+        @Override
+        public void onItemSwiped(int position) {
+            manuObjects.remove(position);
+            notifyItemRemoved(position);
+
+        }
+
+        @Override
         public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
             switch(holder.getItemViewType()){
                 case Constants.TITLE:
@@ -372,6 +381,7 @@ public class card_activityEdit extends AppCompatActivity implements VoiceRecorde
                     break;
                 default:
             }
+
 
 
 
@@ -460,7 +470,6 @@ public class card_activityEdit extends AppCompatActivity implements VoiceRecorde
             if(!manuObjects.get(position).getDataString().equals(""))
             checkList.fromJson(manuObjects.get(position).getDataString());
             checklistAdapter=new ChecklistAdapter(checkList.getItems(),card_activityEdit.this);
-            checklistAdapter.setOnItemAddedListener(AdapterClass.this);
             cvh.recyclerView.setLayoutManager(new LinearLayoutManager(card_activityEdit.this));
             cvh.recyclerView.setAdapter(checklistAdapter);
             cvh.AddItemButton.setOnClickListener(new View.OnClickListener() {
@@ -618,6 +627,19 @@ public class card_activityEdit extends AppCompatActivity implements VoiceRecorde
                 manuAdapter.notifyItemInserted(myObjects.size());
 
             }
+            else if(requestCode==Constants.REQUEST_FILE){
+                Uri file=data.getData();
+                String twinkii[]={MediaStore.MediaColumns.DATA};
+                Cursor cursor=getContentResolver().query(file,twinkii,null,null,null);
+                cursor.moveToFirst();
+                String filestring=cursor.getString(cursor.getColumnIndex(twinkii[0]));
+                cursor.close();
+                myObjects.add(new Data("file://"+filestring,Constants.FILE));
+                manuAdapter.notifyItemInserted(myObjects.size());
+
+
+
+            }
         }
 
 
@@ -644,9 +666,10 @@ public class card_activityEdit extends AppCompatActivity implements VoiceRecorde
                 .addSubButton(ContextCompat.getDrawable(this, R.drawable.ic_playlist_add_check_white_24dp), subButtonColors[1],null)
                 .addSubButton(ContextCompat.getDrawable(this, R.drawable.ic_keyboard_voice_white_24dp), subButtonColors[2],null)
                 .addSubButton(ContextCompat.getDrawable(this, R.drawable.ic_photo_library_white_24dp), subButtonColors[3],null)
+                .addSubButton(ContextCompat.getDrawable(this, R.drawable.ic_photo_library_white_24dp), subButtonColors[3],null)
                 .button(ButtonType.CIRCLE)
                 .boom(BoomType.PARABOLA)
-                .place(PlaceType.CIRCLE_4_1)
+                .place(PlaceType.CIRCLE_5_1)
                 .autoDismiss(true)
                 .cancelable(true)
                 .dim(DimType.DIM_6)
@@ -680,6 +703,12 @@ public class card_activityEdit extends AppCompatActivity implements VoiceRecorde
                         Toast.makeText(card_activityEdit.this, "button 2 clicked", Toast.LENGTH_SHORT).show();
                         Intent galleryIntent = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                         startActivityForResult(Intent.createChooser(galleryIntent,"Choose pic"),Constants.REQUEST_GALLERY);
+                        break;
+                    case 4:
+                        Toast.makeText(card_activityEdit.this, "button 2 clicked", Toast.LENGTH_SHORT).show();
+                        Intent fileIntent = new Intent(Intent.ACTION_GET_CONTENT);
+                        fileIntent.setType("file/*");
+                        startActivityForResult(Intent.createChooser(fileIntent,"Choose file"),Constants.REQUEST_FILE);
                         break;
                     default:
                         Toast.makeText(card_activityEdit.this, "default clicked", Toast.LENGTH_SHORT).show();

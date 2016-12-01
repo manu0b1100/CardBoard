@@ -11,6 +11,7 @@ public class DbSchema {
             public static final String JSONSTRING="jsonstring";
             public static final String INDIVIDUAL="individual";
             public static final String BACKCOLOR="backcolor";
+            public static final String CHANGE="change";
 
 
 

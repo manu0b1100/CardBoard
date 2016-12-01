@@ -13,7 +13,8 @@ public class Constants {
     public static final int FILE=5;
     public static final int REQUEST_PHOTO=0;
     public static final int REQUEST_GALLERY=1;
-    public static final String IMAGEURL="http://images.indianexpress.com/2015/10/";
-    public static final String FILEURL="http://www.pdf995.com/samples/";
+    public static final int REQUEST_FILE=2;
+
+    public static final String IMAGEURL="http://192.168.43.50:8000";
 
 }

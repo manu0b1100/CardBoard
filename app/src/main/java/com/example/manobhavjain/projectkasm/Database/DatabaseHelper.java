@@ -25,6 +25,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 CardsTable.Cols.UUID+", "+
                 CardsTable.Cols.JSONSTRING+ ", "+
                 CardsTable.Cols.INDIVIDUAL+ ", "+
+                CardsTable.Cols.CHANGE+ ", "+
                 CardsTable.Cols.BACKCOLOR+")"
         );
         sqLiteDatabase.execSQL("create table "+ ProjectTable.NAME+"("+
