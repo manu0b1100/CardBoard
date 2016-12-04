@@ -87,10 +87,10 @@ public class card_activityEdit extends AppCompatActivity implements VoiceRecorde
         super.onCreate(savedInstanceState);
         //Fresco.initialize(card_activityEdit.this);
         setContentView(R.layout.frag_card_edit);
-        ;
+
         String uuid=(String)getIntent().getSerializableExtra("UUID");
         cardbase=CardsLab.get(this).getCard(uuid);
-        Log.i("lola","oncreate "+cardbase.getBackcolor());
+//        Log.i("lola","oncreate "+cardbase.getBackcolor());
 
         RelativeLayout lLayout = (RelativeLayout) findViewById(R.id.editlayout);
         lLayout.setBackgroundColor(cardbase.getBackcolor());
@@ -184,6 +184,8 @@ public class card_activityEdit extends AppCompatActivity implements VoiceRecorde
                     @Override
                     public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                         myObjects.get(getAdapterPosition()).setDataString(charSequence.toString());
+                        cardbase.setChange(cardbase.getChange()+1);
+
                         //notifyItemChanged(getAdapterPosition());
 
 
@@ -219,6 +221,8 @@ public class card_activityEdit extends AppCompatActivity implements VoiceRecorde
                     @Override
                     public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                         myObjects.get(getAdapterPosition()).setDataString(charSequence.toString());
+                        cardbase.setChange(cardbase.getChange()+1);
+
                         //notifyItemChanged(getAdapterPosition());
 
 
@@ -349,6 +353,7 @@ public class card_activityEdit extends AppCompatActivity implements VoiceRecorde
         public void onItemSwiped(int position) {
             manuObjects.remove(position);
             notifyItemRemoved(position);
+            cardbase.setChange(cardbase.getChange()+1);
 
         }
 
@@ -483,6 +488,8 @@ public class card_activityEdit extends AppCompatActivity implements VoiceRecorde
                 @Override
                 public void onClick(View view) {
                     myObjects.get(position).setDataString(checkList.toJson());
+                    cardbase.setChange(cardbase.getChange()+1);
+
                     float c=0;
                     ArrayList<CheckListItemClass>items=checkList.getItems();
 
@@ -666,7 +673,7 @@ public class card_activityEdit extends AppCompatActivity implements VoiceRecorde
                 .addSubButton(ContextCompat.getDrawable(this, R.drawable.ic_playlist_add_check_white_24dp), subButtonColors[1],null)
                 .addSubButton(ContextCompat.getDrawable(this, R.drawable.ic_keyboard_voice_white_24dp), subButtonColors[2],null)
                 .addSubButton(ContextCompat.getDrawable(this, R.drawable.ic_photo_library_white_24dp), subButtonColors[3],null)
-                .addSubButton(ContextCompat.getDrawable(this, R.drawable.ic_photo_library_white_24dp), subButtonColors[3],null)
+                .addSubButton(ContextCompat.getDrawable(this, R.drawable.ic_attach_file_white_24dp), subButtonColors[3],null)
                 .button(ButtonType.CIRCLE)
                 .boom(BoomType.PARABOLA)
                 .place(PlaceType.CIRCLE_5_1)
@@ -681,6 +688,8 @@ public class card_activityEdit extends AppCompatActivity implements VoiceRecorde
         boomMenuButton.setOnSubButtonClickListener(new BoomMenuButton.OnSubButtonClickListener() {
             @Override
             public void onClick(int buttonIndex) {
+                cardbase.setChange(cardbase.getChange()+1);
+
                 switch(buttonIndex){
                     case 0:
                         Toast.makeText(card_activityEdit.this, "button 0 clicked", Toast.LENGTH_SHORT).show();
@@ -709,10 +718,12 @@ public class card_activityEdit extends AppCompatActivity implements VoiceRecorde
                         Intent fileIntent = new Intent(Intent.ACTION_GET_CONTENT);
                         fileIntent.setType("file/*");
                         startActivityForResult(Intent.createChooser(fileIntent,"Choose file"),Constants.REQUEST_FILE);
+
                         break;
                     default:
                         Toast.makeText(card_activityEdit.this, "default clicked", Toast.LENGTH_SHORT).show();
                         break;
+
 
 
                 }

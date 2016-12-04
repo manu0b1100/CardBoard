@@ -23,7 +23,7 @@ public class MyCursorWrapper extends CursorWrapper {
 
 
     }
-    public Pair getCardMap(){
+    public Pair<String,Integer> getCardMap(){
         String uuid=getString(getColumnIndex(CardsTable.Cols.UUID));
         Integer change=getInt(getColumnIndex(CardsTable.Cols.CHANGE));
 

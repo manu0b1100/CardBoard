@@ -11,8 +11,8 @@
     <color name="divider">#CCC</color>
     <color name="icons">#FFF</color>
     <color name="item_background">#FFF</color>
-    <color name="colorPrimary">#9B26AF</color>
-    <color name="colorPrimaryDark">#691A99</color>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#68EFAD</color>
     <color name="colorBackground">#147fbb</color>
     <color name="text_color">#222222</color>

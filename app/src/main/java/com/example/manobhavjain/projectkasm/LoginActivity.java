@@ -79,7 +79,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         if(email.equals("test") && password.equals("test1")){
             Log.i("manobhav","backdoor entered");
 
-            SharedPreferences sharedPreferences = LoginActivity.this.getSharedPreferences(Config.SHARED_PREF_NAME, Context.MODE_PRIVATE);
+            SharedPreferences sharedPreferences = getSharedPreferences(Config.SHARED_PREF_NAME, Context.MODE_PRIVATE);
 
             //Creating editor to store values to shared preferences
             SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -108,7 +108,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         //If we are getting success from server
                         if(response.equalsIgnoreCase(Config.LOGIN_SUCCESS)){
                             //Creating a shared preference
-                            SharedPreferences sharedPreferences = LoginActivity.this.getSharedPreferences(Config.SHARED_PREF_NAME, Context.MODE_PRIVATE);
+                            SharedPreferences sharedPreferences = getSharedPreferences(Config.SHARED_PREF_NAME, Context.MODE_PRIVATE);
 
                             //Creating editor to store values to shared preferences
                             SharedPreferences.Editor editor = sharedPreferences.edit();

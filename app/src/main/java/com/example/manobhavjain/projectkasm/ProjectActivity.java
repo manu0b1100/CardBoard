@@ -26,7 +26,7 @@ import java.util.UUID;
 /**
  * Created by Manobhav Jain on 8/29/2016.
  */
-public class ProjectActivity extends AppCompatActivity{
+public class ProjectActivity extends AppCompatActivity implements PagerChanger{
 
     private ViewPager viewPager;
 
@@ -51,11 +51,14 @@ public class ProjectActivity extends AppCompatActivity{
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.project_activity);
+        updatedata();
         viewPager=(ViewPager)findViewById(R.id.list_pager);
+        viewPager.setOffscreenPageLimit(project.getListInsideProjects().size());
+
         tab=(TabLayout)findViewById(R.id.home_tab);
 
         fab=(FloatingActionButton)findViewById(R.id.floatingbutton1);
-        updatedata();
+
 
         viewPager.setAdapter(new FragmentStatePagerAdapter(getSupportFragmentManager()) {
             @Override
@@ -116,6 +119,17 @@ public class ProjectActivity extends AppCompatActivity{
 
         tab.setupWithViewPager(viewPager);
 
+
+
+    }
+    @Override
+    public void pagerleft() {
+        viewPager.setCurrentItem((viewPager.getCurrentItem()-1)%project.getListInsideProjects().size());
+    }
+
+    @Override
+    public void pagerright() {
+        viewPager.setCurrentItem((viewPager.getCurrentItem()+1)%project.getListInsideProjects().size());
 
 
     }

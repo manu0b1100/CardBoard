@@ -76,9 +76,9 @@ public class CardsLab {
         return getCards(manuWrapper);
 
     }
-    public HashMap getCardMapping(){
+    public HashMap<String,Integer> getCardMapping(){
 
-        HashMap<String,Integer> manumap=new HashMap();
+        HashMap<String,Integer> manumap=new HashMap<>();
         MyCursorWrapper manuWrapper=queryCards(null,null);
         try{
             while(!manuWrapper.isAfterLast()){

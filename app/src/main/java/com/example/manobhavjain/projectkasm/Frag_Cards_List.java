@@ -1,7 +1,9 @@
 package com.example.manobhavjain.projectkasm;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -31,6 +33,9 @@ public class Frag_Cards_List extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         Log.i("manobhav","oncreateview entered");
+
+
+
         Fresco.initialize(getActivity());
 
         View v=inflater.inflate(R.layout.frag_list,container,false);

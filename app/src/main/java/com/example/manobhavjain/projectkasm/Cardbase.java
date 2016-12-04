@@ -85,7 +85,24 @@ public class Cardbase {
 
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
+        Cardbase cardbase = (Cardbase) o;
+
+        if(this.key.equals(cardbase.key))
+            return true;
+        else
+            return false;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return key != null ? key.hashCode() : 0;
+    }
 }
 
 class Data {

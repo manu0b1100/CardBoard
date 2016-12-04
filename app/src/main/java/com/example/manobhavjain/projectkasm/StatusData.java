@@ -10,6 +10,10 @@ public class StatusData {
     private String username;
     private ArrayList<CardidObject>card_id=new ArrayList<>();
 
+    public void setCard_id(ArrayList<CardidObject> card_id) {
+        this.card_id = card_id;
+    }
+
     public ArrayList<CardidObject> getCard_id() {
         return card_id;
     }

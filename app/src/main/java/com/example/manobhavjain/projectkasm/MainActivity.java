@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -11,6 +12,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -51,6 +53,8 @@ public class MainActivity extends AppCompatActivity implements OnMenuItemClickLi
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fragment);
+        SharedPreferences prefs = getSharedPreferences(Config.SHARED_PREF_NAME,Context.MODE_PRIVATE);
+        Log.d("manobhav",prefs.getString(Config.EMAIL_SHARED_PREF,"def"));
 
         fragmentManager=getSupportFragmentManager();
         tabLayout=(TabLayout)findViewById(R.id.home_tab);
@@ -127,6 +131,7 @@ public class MainActivity extends AppCompatActivity implements OnMenuItemClickLi
 
         MenuObject like = new MenuObject("Add Project");
         like.setResource(R.drawable.icn_2);
+
         MenuObject sync = new MenuObject("Sync");
         like.setResource(R.drawable.icn_2);
 
@@ -153,9 +158,9 @@ public class MainActivity extends AppCompatActivity implements OnMenuItemClickLi
                     public void onClick(DialogInterface arg0, int arg1) {
 
                         //Getting out sharedpreferences
-                        SharedPreferences preferences = getSharedPreferences(Config.SHARED_PREF_NAME, Context.MODE_PRIVATE);
+                        SharedPreferences prefs = getSharedPreferences(Config.SHARED_PREF_NAME,Context.MODE_PRIVATE);
                         //Getting editor
-                        SharedPreferences.Editor editor = preferences.edit();
+                        SharedPreferences.Editor editor = prefs.edit();
 
                         //Puting the value false for loggedin
                         editor.putBoolean(Config.LOGGEDIN_SHARED_PREF, false);
